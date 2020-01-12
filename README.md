@@ -1,30 +1,44 @@
 # date-enum
-Subsets a dataframe on rows which overlap a given date range.
+Provides a table which includes an instance for each month a user ID was active.
 
 # Usage:
 ```
+import pandas as pd
 from date_enum import date_filter
+
 test_df = pd.read_csv('data.csv')
-test_df_filtered = date_filter(
-  test_df,
-  start_date='3/6/2016',
-  end_date='5/9/2016'
-)
+test_df_output = date_filter(test_df)
+test_df_output.to_csv('output.csv')
 
->>> test_df_filtered.groupby('Race').count()
-                 ID  Start Date  End Date  Gender  Zip  Age
-Race
-Asian             4           4         3       4    4    4
-Black            12          12         2      12   12   12
-Hispanic          9           9         5       9    9    9
-Multi-race        6           6         3       6    6    6
-Some Other Race   8           8         2       8    8    8
-White             6           6         4       6    6    6
-
->>> test_df_filtered.groupby('Gender').count()
-ID  Start Date  End Date  Zip  Age  Race
-Gender
-Female  15          15         6   15   15    15
-Male    30          30        13   30   30    30
-
+>>> date_filter(df)
+    ID         POI
+0    1  01/01/2018
+1    1  02/01/2018
+2    1  03/01/2018
+3    1  04/01/2018
+4    1  05/01/2018
+5    1  06/01/2018
+6    1  07/01/2018
+7    1  08/01/2018
+8    1  09/01/2018
+9    1  10/01/2018
+10   1  11/01/2018
+11   1  12/01/2018
+12   1  01/01/2019
+13   1  02/01/2019
+14   1  03/01/2019
+15   1  04/01/2019
+16   1  05/01/2019
+17   1  06/01/2019
+18   1  07/01/2019
+19   1  08/01/2019
+20   1  09/01/2019
+21   1  10/01/2019
+22   1  11/01/2019
+23   1  12/01/2019
+24   1  01/01/2020
+25   2  03/01/2019
+26   2  04/01/2019
+27   2  05/01/2019
+28   2  06/01/2019
 ```

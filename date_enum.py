@@ -1,24 +1,35 @@
 import pandas as pd
 import numpy as np
 
-# Input raw dataset, as well as start and end dates to filter on
-# End date defaults to today
-def date_filter(df, start_date, end_date=np.datetime64('today', 'D')):
+# Input raw dataset
+def date_filter(df):
 
-    # Return boolean check on whether a given date lies within the specified range
-    def date_check(test_date, start, end):
-        if test_date in pd.date_range(start=start, end=end):
-            return True
-        else:
-            return False
+    df['Start Date'] = pd.to_datetime(
+        df['Start Date'],
+        infer_datetime_format=True
+        )
+    df['End Date'] = pd.to_datetime(
+        df['End Date'],
+        infer_datetime_format=True
+        ).replace(to_replace=np.nan, value=np.datetime64('today'))
 
-    # Vectorize the boolean check to operate on an array
-    df_filter = np.vectorize(date_check)
-    # Create boolean array on the match start dates
-    start_mask = df_filter(df['Start Date'], start_date, end_date)
-    # Create boolean array on the match end dates
-    end_mask = df_filter(df['End Date'], start_date, end_date)
-    # Subset dataframe values where the Start Date OR End Date are within the given range
-    df = df[start_mask | end_mask]
-    # Return filtered dataframe
+    def date_range(df):
+        return pd.date_range(start=df['Start Date']-pd.DateOffset(months=1),
+            end=df['End Date'],
+            freq='MS',
+            normalize=True
+            )
+
+    df['Date Range'] = df.apply(date_range, axis=1)
+
+    list_col = 'Date Range'
+    df = pd.DataFrame({
+            col:np.repeat(df[col].values, df[list_col].str.len())
+            for col in df.columns.drop(list_col)
+        }).assign(**{list_col:np.concatenate(df[list_col].values)})[df.columns]
+
+    df['POI'] = df['Date Range'].dt.strftime("%m/%d/%Y")
+
+    df = df[['ID', 'POI']]
+
     return(df)

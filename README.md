@@ -10,7 +10,7 @@ test_df = pd.read_csv('data.csv')
 test_df_output = date_filter(test_df)
 test_df_output.to_csv('output.csv')
 
->>> date_filter(df)
+>>> test_df_output
     ID         POI
 0    1  01/01/2018
 1    1  02/01/2018
